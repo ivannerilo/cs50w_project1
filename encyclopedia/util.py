@@ -35,3 +35,17 @@ def get_entry(title):
         return f.read().decode("utf-8")
     except FileNotFoundError:
         return None
+    
+def title_separator(md_text):
+    if not md_text:
+        return None, None
+    
+    lines = md_text.split("\n")
+    title = None
+    content = None
+
+    if lines[0].startswith("# "):
+        title = lines[0][2:].strip()
+        content = "\n".join(lines[1:]).strip()
+
+    return title, content
