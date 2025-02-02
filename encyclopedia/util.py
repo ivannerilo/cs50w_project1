@@ -41,8 +41,8 @@ def title_separator(md_text):
         return None, None
     
     lines = md_text.split("\n")
-    title = None
-    content = None
+    title = "NO TITLE PROVIDED!"
+    content = md_text
 
     if lines[0].startswith("# "):
         title = lines[0][2:].strip()
