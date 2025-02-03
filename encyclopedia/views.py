@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django import forms
+from django.urls import reverse
 from . import util
 
 def index(request):
@@ -32,9 +33,22 @@ def search(request):
 	return render(request, "encyclopedia/index.html")
 
 class newPageForm(forms.Form):
-	new_text = forms.CharField(label="Type here the new page content: ")
+	new_text = forms.CharField(
+		widget=forms.Textarea(attrs={'rows':15, 'cols': 50, 'placeholder': "Type here the new page content: "}),
+		label="Create a new page here!",
+		max_length= 1000
+	)
 
 def create(request):
+	if request.method == 'POST':
+		form = newPageForm(request.POST)
+		if form.is_valid():
+			title, _ = util.title_separator(form.cleaned_data["new_text"])
+			util.save_entry(title, form.cleaned_data["new_text"])
+			return HttpResponseRedirect(reverse("encyclopedia:index"))
+		return render(request, "encyclopedia/create.html", {
+			"form": form
+		})
 	return render(request, "encyclopedia/create.html", {
 		"form": newPageForm()
 	})
