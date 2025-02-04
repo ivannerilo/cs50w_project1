@@ -9,4 +9,9 @@
 
     <p>{{ content }}</p>
 
+    <form action="{% url 'encyclopedia:edit' %}" method="get">
+        <input type="hidden" name="e" value="{{ title }}">
+        <button type="submit">Edit Text</button>
+    </form>
+
 {% endblock %}

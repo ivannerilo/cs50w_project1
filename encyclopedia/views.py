@@ -53,4 +53,19 @@ def create(request):
 		"form": newPageForm()
 	})
 
+def edit(request):
+	if request.method == 'POST':
+		form = newPageForm(request.POST)
+		if form.is_valid():
+			title, _ = util.title_separator(form.cleaned_data["new_text"])
+			util.save_entry(title, form.cleaned_data["new_text"])
+			return HttpResponseRedirect(f'/{title}')
+		return render(request, 'encyclopedia:edit.html', {
+			"form": form
+		})
+	editable_text = util.get_entry(request.GET['e'])
+	editForm = newPageForm(initial={'new_text': editable_text})
+	return render(request, 'encyclopedia/edit.html', {
+		"form": editForm
+	})
 	
