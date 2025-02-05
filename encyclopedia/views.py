@@ -3,6 +3,8 @@ from django.http import HttpResponseRedirect
 from django import forms
 from django.urls import reverse
 from . import util
+from random import randrange
+
 
 def index(request):
 	return render(request, "encyclopedia/index.html", {
@@ -68,4 +70,8 @@ def edit(request):
 	return render(request, 'encyclopedia/edit.html', {
 		"form": editForm
 	})
-	
+
+def random(request):
+	entries = util.list_entries()
+	random_page = entries[randrange(0, len(entries))]
+	return HttpResponseRedirect(f"/{random_page.lower()}")
