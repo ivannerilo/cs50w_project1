@@ -4,6 +4,8 @@ from django import forms
 from django.urls import reverse
 from . import util
 from random import randrange
+import markdown2
+
 
 
 def index(request):
@@ -15,11 +17,10 @@ def show_content(request, title):
 	text = util.get_entry(title)
 	if text is None:
 		return render(request, "encyclopedia/errorpage.html")
-	else:
-		s_title, content = util.title_separator(text)
-		return render(request, "encyclopedia/content.html", {
-		"content": content,
-		"title": s_title
+	
+	return render(request, "encyclopedia/content.html", {
+		"mkd_text": markdown2.markdown(text),
+		"title": title.lower()
 	})
 
 def search(request):
@@ -27,7 +28,7 @@ def search(request):
 		entries = util.list_entries()
 		query = request.GET['q']
 		if query.lower() in [entry.lower() for entry in entries]:
-			return HttpResponseRedirect(f"/{query}")
+			return HttpResponseRedirect(f"wiki/{query}")
 		search_results = [entry for entry in entries if query in entry.lower()]
 		return render(request, "encyclopedia/search_results.html", {
 			"entries": search_results
@@ -61,10 +62,11 @@ def edit(request):
 		if form.is_valid():
 			title, _ = util.title_separator(form.cleaned_data["new_text"])
 			util.save_entry(title, form.cleaned_data["new_text"])
-			return HttpResponseRedirect(f'/{title}')
+			return HttpResponseRedirect(f'wiki/{title}')
 		return render(request, 'encyclopedia:edit.html', {
 			"form": form
 		})
+	
 	editable_text = util.get_entry(request.GET['e'])
 	editForm = newPageForm(initial={'new_text': editable_text})
 	return render(request, 'encyclopedia/edit.html', {
@@ -74,4 +76,4 @@ def edit(request):
 def random(request):
 	entries = util.list_entries()
 	random_page = entries[randrange(0, len(entries))]
-	return HttpResponseRedirect(f"/{random_page.lower()}")
+	return HttpResponseRedirect(f"wiki/{random_page.lower()}")
