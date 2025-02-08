@@ -49,4 +49,3 @@ def title_separator(md_text):
         content = "\n".join(lines[1:]).strip()
 
     return title, content
-

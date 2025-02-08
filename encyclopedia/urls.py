@@ -11,3 +11,4 @@ urlpatterns = [
     path("random", views.random, name="random"),
     path("wiki/<str:title>", views.show_content, name="show_content"),
 ]
+

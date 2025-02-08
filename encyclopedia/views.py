@@ -28,7 +28,7 @@ def search(request):
 		entries = util.list_entries()
 		query = request.GET['q']
 		if query.lower() in [entry.lower() for entry in entries]:
-			return HttpResponseRedirect(f"wiki/{query}")
+			return HttpResponseRedirect(f"/{query}")
 		search_results = [entry for entry in entries if query in entry.lower()]
 		return render(request, "encyclopedia/search_results.html", {
 			"entries": search_results
